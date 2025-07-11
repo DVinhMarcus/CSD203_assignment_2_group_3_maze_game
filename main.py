@@ -1,17 +1,26 @@
-from logic.graph import Graph
-from logic.mazegenerator import maze_generator
-from graphic.graphicForGame import draw_maze_stepwise
 
-g1 = maze_generator()
-g2 = g1.maze_generator_hunt_and_kill(30)
-g3 = g1.maze_generator_dfs(100)
-g4 = g1.maze_generateor_prim(100)
-#draw_maze_stepwise(g2,30,30)
+import system
 
-g = Graph()
-g.wilson(size=10)
-draw_maze_stepwise(g,10)  
+def main():
+    user_input = input(
+        "Choose algorithm (1–4):\n"
+        "1. Wilson\n"
+        "2. Prim\n"
+        "3. Kruskal\n"
+        "4. Recursive (DFS)\n> "
+    )
+    size = int(input("Enter maze size (default 30): "))
+    if size >5 and size < 100:
+        if user_input == '1':
+            system.start_game(ALGORITHM='wilson', MAZE_SIZE=size)
+        elif user_input == '2': 
+            system.start_game(ALGORITHM='prim', MAZE_SIZE=size)
+        elif user_input == '3':
+            system.start_game(ALGORITHM='kurskal',MAZE_SIZE=size)
+        elif user_input == '4':
+            system.start_game(ALGORITHM='dfs', MAZE_SIZE=size    )
+        else:
+            print("Invalid input. Choose a number from 1 to 4.")
 
-
-
-
+if __name__ == "__main__":
+    main()

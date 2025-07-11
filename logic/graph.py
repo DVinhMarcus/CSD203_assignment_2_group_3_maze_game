@@ -150,7 +150,7 @@ class Graph:
     def A_star(self): #tam
         pass
     def kurskal(self): #vinh
-
+        pass
     def wilson(self, size):
         self.add_grid(size)
         all_cells = [f"{i},{j}" for i in range(size) for j in range(size)]
