@@ -4,6 +4,7 @@ from logic.vertex import Vertex
 import random
 from logic.queue_home_made import Queue
 import random
+from queue import PriorityQueue
 class Graph:
     def __init__(self):
        self.vertices_list = {}
@@ -42,9 +43,12 @@ class Graph:
                 if neighbor not in visted:
                     q.enqueue(self.vertices_list[start])
                     visted.add(neighbor.key)
+
     def dfg(self,start):
         pass
 
+    def dijkstra(self):
+        pass
 
     ## function mở rộng thêm, đọc ma trận ( hứng lên cho vào ) 
     def int_to_char(self,i):
@@ -149,8 +153,93 @@ class Graph:
                 self.build_steps.append((vertex,i))
     def A_star(self): #tam
         pass
+
+    #ultility function
+
+    def get_num_vertices(self, graph):
+        return len(graph.vertices_list)
+
+    def find_graphs(self, vertex, graphs):
+        for g in graphs:
+            if vertex in g.vertices_list:
+                return g
+        return None
+
+    def is_enough_vertices(self, o_graph):
+        if len(self.vertices_list) != len(o_graph.vertices_list):
+            return False
+
+        return True
+
+    def merge_graphs(self, graph1, graph2, u, v, weight):
+        graph1.add_edge(u,v,weight)
+        graph2.add_edge(u,v,weight)
+
+        #merge
+        graph1.vertices_list = graph1.vertices_list + graph2.vertices_list
+
+        return graph1
+
+
+    def delete_graph(self,list_graphs:list, removed_graph): #Type Hints
+        for g in list_graphs:
+            if g is removed_graph:
+                list_graphs.remove(g)
+
+        return list_graphs
+
     def kurskal(self): #vinh
-        pass
+        edges = set()
+        for v, neighbors in self.vertices_list.items():
+            for u,w in neighbors.items():
+                #tránh trùng cạnh (trong undirected graph), tuple có thứ tự cố định
+                edge = tuple(sorted((v,u)) + [w])
+
+        sorted_edges = sorted(edges, key= lambda x: x[3])
+        graphs = []
+        graph = Graph()
+
+        first_edge = sorted_edges.pop(0)
+        u,v,weight = first_edge
+        graph.add_edge(u,v,weight)
+        graphs.append(graph)
+
+        while len(sorted_edges) != 0:
+            edge = sorted_edges.pop(0)
+            u,v,weight = edge
+            g1 = self.find_graphs(u,graphs)
+            g2 = self.find_graphs(v,graphs)
+            if g1 and g2:
+                if g1 is g2:
+                    pass
+                else:
+                    self.merge_graphs(g1,g2,u,v,weight)
+                    self.delete_graph(graphs,g2)
+
+                    if self.is_enough_vertices(g1):
+                        break
+
+            elif g1:
+                g1.add_edge(u,v,weight)
+                if self.is_enough_vertices(g1):
+                    break
+
+            elif g2:
+                g2.add_edge(u,v,weight)
+                if self.is_enough_vertices(g2):
+                    break
+
+            else:
+                graph = Graph()
+                graph.add_edge(u, v, weight)
+                graphs.append(graph)
+
+        for g in graphs:
+            if self.is_enough_vertices(g):
+                return g
+
+        return None
+
     def wilson(self, size):
         self.add_grid(size)
         all_cells = [f"{i},{j}" for i in range(size) for j in range(size)]
